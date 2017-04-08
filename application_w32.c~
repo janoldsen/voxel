@@ -1,0 +1,87 @@
+#include "application.h"
+#define UNICODE
+#include <windows.h>
+#include <stdio.h>
+
+struct app
+{
+    HWND wnd_h;
+};
+
+
+LRESULT CALLBACK window_proc(HWND wnd_h, UINT msg, WPARAM w_param, LPARAM l_param)
+{
+
+    return DefWindowProc(wnd_h, msg, w_param, l_param);
+  
+}
+
+
+#define MAX_NAME_LENGTH 255
+
+app_handle create_app(struct app_description *descr)
+{
+    HINSTANCE h_instance = GetModuleHandle(NULL);
+
+    printf(descr->name);
+	
+    WCHAR name[MAX_NAME_LENGTH];
+    MultiByteToWideChar(CP_UTF8, 0, descr->name, -1, name, MAX_NAME_LENGTH);
+
+    WCHAR *className = L"app_class";
+	
+    WNDCLASS wc = {
+	.lpfnWndProc = window_proc,
+	.hInstance = h_instance,
+	.lpszClassName = className
+    }; 
+	
+    if (!RegisterClassW(&wc))
+	return NULL;
+
+    HWND wnd_h = CreateWindowEx(
+				0,
+				className,
+				name,
+				WS_OVERLAPPEDWINDOW,
+				CW_USEDEFAULT, CW_USEDEFAULT,
+				descr->width, descr->height,
+				NULL, NULL,
+				h_instance,
+				NULL
+				);
+
+    if (wnd_h == NULL)
+	return NULL;
+
+    ShowWindow(wnd_h, TRUE);
+  
+    struct app *app_ptr = malloc(sizeof(struct app));
+
+    app_ptr->wnd_h = wnd_h;
+    return app_ptr;
+  
+}
+
+void destroy_app(app_handle app)
+{
+    free(app);
+
+}
+
+VkSwapchainKHR create_swappchain(app_handle app)
+{
+
+}
+
+void update_app(app_handle app)
+{
+
+    MSG msg;
+    while(PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+	{
+	    TranslateMessage(&msg);
+	    DispatchMessage(&msg);
+	}
+}
+		

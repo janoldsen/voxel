@@ -1,0 +1,11 @@
+#ifndef JOLD_VOXEL_H
+#define JOLD_VOXEL_H
+
+#include "application.h"
+
+struct renderer *create_renderer(window_handle window);
+
+void update_renderer(
+
+
+#endif

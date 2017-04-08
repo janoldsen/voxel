@@ -1,0 +1,26 @@
+#ifndef JOLD_APPLICATION_H
+#define JOLD_APPLICATION_H
+
+#include <vulkan/vulkan.h>
+
+typedef struct app *app_handle;
+
+struct app_description
+{
+  unsigned width;
+  unsigned height;
+  const char* name;
+};
+  
+
+
+app_handle create_app(struct app_description *descr);
+void destroy_app(app_handle app);
+
+VkSwapchainKHR create_swapchain(app_handle app);
+
+void update_app(app_handle app);
+
+
+
+#endif
